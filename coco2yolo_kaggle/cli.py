@@ -28,6 +28,19 @@ def main():
     parser.add_argument('--max-workers', type=int, default=8,
                         help='Number of parallel worker threads')
     
+    # Directory structure customization
+    parser.add_argument('--train-dir-name', type=str, default='train2017',
+                        help='Destination train subdirectory name')
+    
+    parser.add_argument('--val-dir-name', type=str, default='val2017',
+                        help='Destination validation subdirectory name')
+    
+    parser.add_argument('--src-train-dir', type=str, default='train2017',
+                        help='Source train directory name')
+    
+    parser.add_argument('--src-val-dir', type=str, default='val2017',
+                        help='Source validation directory name')
+    
     # Command mode selection
     parser.add_argument('--mode', type=str, choices=['convert', 'copy', 'all'], default='convert',
                         help='Operation mode: convert (labels only), copy (after convert), or all (both)')
@@ -48,7 +61,11 @@ def main():
             json_dir=args.json_dir,
             output_dir=args.output_dir,
             final_dest=args.final_dest,
-            max_workers=args.max_workers
+            max_workers=args.max_workers,
+            train_dir_name=args.train_dir_name,
+            val_dir_name=args.val_dir_name,
+            src_train_dir_name=args.src_train_dir,
+            src_val_dir_name=args.src_val_dir
         )
     elif args.mode == 'all':
         # Do both conversion and copying
@@ -59,7 +76,11 @@ def main():
             use_segments=args.use_segments,
             cls91to80=args.cls91to80,
             max_workers=args.max_workers,
-            copy_files=True
+            copy_files=True,
+            train_dir_name=args.train_dir_name,
+            val_dir_name=args.val_dir_name,
+            src_train_dir_name=args.src_train_dir,
+            src_val_dir_name=args.src_val_dir
         )
 
 if __name__ == "__main__":

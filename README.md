@@ -9,6 +9,7 @@ A tool for converting COCO dataset to YOLO format in Kaggle environment. This to
 - Support parallel file operations for faster processing
 - Support segment annotations
 - Flexible commands for different operations
+- Customizable directory structure
 
 ## Installation
 
@@ -34,7 +35,7 @@ labels_dir = convert_coco_labels(
 )
 ```
 
-#### File Copy Only
+#### File Copy Only (with Custom Directory Names)
 
 ```python
 from coco2yolo_kaggle import copy_dataset
@@ -44,7 +45,9 @@ dataset_path = copy_dataset(
     json_dir="/kaggle/input/coco-2017-dataset/coco2017/annotations",
     output_dir="/kaggle/working/coco_yolo",
     final_dest="/kaggle/tmp/COCO2017",
-    max_workers=8
+    max_workers=8,
+    train_dir_name="train",  # Custom train directory name (default: "train2017")
+    val_dir_name="val"       # Custom validation directory name (default: "val2017")
 )
 ```
 
@@ -53,7 +56,7 @@ dataset_path = copy_dataset(
 ```python
 from coco2yolo_kaggle import convert_coco_dataset
 
-# Complete process (both conversion and copying)
+# Complete process with custom directory names
 dataset_path = convert_coco_dataset(
     json_dir="/kaggle/input/coco-2017-dataset/coco2017/annotations",
     output_dir="/kaggle/working/coco_yolo",
@@ -61,7 +64,11 @@ dataset_path = convert_coco_dataset(
     use_segments=True,
     cls91to80=True,
     max_workers=8,
-    copy_files=True  # Set to False to skip copying files
+    copy_files=True,  # Set to False to skip copying files
+    train_dir_name="train",  # Custom destination directory (default: "train2017")
+    val_dir_name="val",      # Custom destination directory (default: "val2017")
+    src_train_dir_name="train2017",  # Source train directory name
+    src_val_dir_name="val2017"       # Source validation directory name
 )
 ```
 
@@ -73,17 +80,26 @@ dataset_path = convert_coco_dataset(
 coco2yolo-kaggle --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo
 ```
 
-#### Copy Files Only
+#### Copy Files Only (with Custom Directory Names)
 
 ```bash
-coco2yolo-kaggle --mode=copy --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo --final-dest=/kaggle/tmp/COCO2017
+coco2yolo-kaggle --mode=copy --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo --final-dest=/kaggle/tmp/COCO2017 --train-dir-name=train --val-dir-name=val
 ```
 
-#### Complete Process
+#### Complete Process with Custom Directory Names
 
 ```bash
-coco2yolo-kaggle --mode=all --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo --final-dest=/kaggle/tmp/COCO2017
+coco2yolo-kaggle --mode=all --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo --final-dest=/kaggle/tmp/COCO2017 --train-dir-name=train --val-dir-name=val
 ```
+
+## Customizing Directory Structure
+
+You can customize the directory names using these parameters:
+
+- `--train-dir-name`: Set destination train directory name (default: "train2017")
+- `--val-dir-name`: Set destination validation directory name (default: "val2017")
+- `--src-train-dir`: Source train directory name (default: "train2017")
+- `--src-val-dir`: Source validation directory name (default: "val2017")
 
 ## Kaggle Example Code
 
@@ -94,18 +110,18 @@ coco2yolo-kaggle --mode=all --json-dir=/kaggle/input/coco-2017-dataset/coco2017/
 # 2. Convert labels only
 !coco2yolo-kaggle --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo
 
-# 3. Copy dataset files (if needed)
-!coco2yolo-kaggle --mode=copy --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo --final-dest=/kaggle/tmp/COCO2017
+# 3. Copy dataset files with custom directory names
+!coco2yolo-kaggle --mode=copy --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo --final-dest=/kaggle/tmp/COCO2017 --train-dir-name=train --val-dir-name=val
 
 # 4. Train a YOLOv8 model
 !pip install ultralytics
 from ultralytics import YOLO
 
-# Create dataset configuration file
+# Create dataset configuration file with custom directory structure
 %%writefile coco.yaml
 path: /kaggle/tmp/COCO2017
-train: images/train2017
-val: images/val2017
+train: images/train  # Using custom directory name
+val: images/val      # Using custom directory name
 nc: 80
 names: ['person', 'bicycle', 'car', ... ] # Complete 80 class names
 

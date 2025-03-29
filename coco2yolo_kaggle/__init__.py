@@ -37,7 +37,11 @@ def copy_dataset(
     json_dir="/kaggle/input/coco-2017-dataset/coco2017/annotations",
     output_dir="/kaggle/working/coco_yolo",
     final_dest="/kaggle/tmp/COCO2017",
-    max_workers=8
+    max_workers=8,
+    train_dir_name="train2017",
+    val_dir_name="val2017",
+    src_train_dir_name="train2017",
+    src_val_dir_name="val2017"
 ):
     """
     Copy dataset files to final destination
@@ -47,6 +51,10 @@ def copy_dataset(
         output_dir: Directory with converted YOLO labels
         final_dest: Final dataset directory
         max_workers: Number of parallel worker threads
+        train_dir_name: Destination train subdirectory name (default: "train2017")
+        val_dir_name: Destination validation subdirectory name (default: "val2017")
+        src_train_dir_name: Source train subdirectory name (default: "train2017")
+        src_val_dir_name: Source validation subdirectory name (default: "val2017")
     
     Returns:
         Path to the final destination directory
@@ -57,10 +65,13 @@ def copy_dataset(
     os.makedirs(f'{final_dest}/images', exist_ok=True)
     os.makedirs(f"{final_dest}/labels", exist_ok=True)
     
+    # Get base directory from json_dir
+    base_dir = '/'.join(json_dir.split('/')[:-1])
+    
     # Copy image files
     copy_tasks = [
-        (f"{'/'.join(json_dir.split('/')[:-1])}/train2017", f"{final_dest}/images/train2017"),
-        (f"{'/'.join(json_dir.split('/')[:-1])}/val2017", f"{final_dest}/images/val2017")
+        (f"{base_dir}/{src_train_dir_name}", f"{final_dest}/images/{train_dir_name}"),
+        (f"{base_dir}/{src_val_dir_name}", f"{final_dest}/images/{val_dir_name}")
     ]
     
     for src, dest in copy_tasks:
@@ -68,8 +79,8 @@ def copy_dataset(
     
     # Move label files - using parallel processing
     move_tasks = [
-        (f"{output_dir}/labels/train", f"{final_dest}/labels/train2017"),
-        (f"{output_dir}/labels/val", f"{final_dest}/labels/val2017")
+        (f"{output_dir}/labels/train", f"{final_dest}/labels/{train_dir_name}"),
+        (f"{output_dir}/labels/val", f"{final_dest}/labels/{val_dir_name}")
     ]
     
     # Using ProcessPoolExecutor for parallel move operations
@@ -80,8 +91,8 @@ def copy_dataset(
         print(result)
         
     print(f"Dataset preparation complete! Location: {final_dest}")
-    print(f"- Images: {final_dest}/images/")
-    print(f"- Labels: {final_dest}/labels/")
+    print(f"- Images: {final_dest}/images/{train_dir_name} and {final_dest}/images/{val_dir_name}")
+    print(f"- Labels: {final_dest}/labels/{train_dir_name} and {final_dest}/labels/{val_dir_name}")
     
     return final_dest
 
@@ -92,7 +103,11 @@ def convert_coco_dataset(
     use_segments=True,
     cls91to80=True,
     max_workers=8,
-    copy_files=True
+    copy_files=True,
+    train_dir_name="train2017",
+    val_dir_name="val2017",
+    src_train_dir_name="train2017",
+    src_val_dir_name="val2017"
 ):
     """
     Execute the complete COCO dataset conversion process:
@@ -107,6 +122,10 @@ def convert_coco_dataset(
         cls91to80: Whether to map 91 classes to 80 classes
         max_workers: Number of parallel worker threads
         copy_files: Whether to copy image files and move labels to final destination
+        train_dir_name: Destination train subdirectory name (default: "train2017")
+        val_dir_name: Destination validation subdirectory name (default: "val2017")
+        src_train_dir_name: Source train subdirectory name (default: "train2017")
+        src_val_dir_name: Source validation subdirectory name (default: "val2017")
     
     Returns:
         Path to the resulting dataset directory
@@ -125,7 +144,11 @@ def convert_coco_dataset(
             json_dir=json_dir,
             output_dir=output_dir,
             final_dest=final_dest,
-            max_workers=max_workers
+            max_workers=max_workers,
+            train_dir_name=train_dir_name,
+            val_dir_name=val_dir_name,
+            src_train_dir_name=src_train_dir_name,
+            src_val_dir_name=src_val_dir_name
         )
     else:
         print(f"Labels conversion complete! Location: {output_dir}")
