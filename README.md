@@ -31,7 +31,7 @@ labels_dir = convert_coco_labels(
     json_dir="/kaggle/input/coco-2017-dataset/coco2017/annotations",
     output_dir="/kaggle/working/coco_yolo",
     use_segments=True,
-    cls91to80=True
+    cls91to80=True  # Map 91 COCO classes to 80 classes (default: True)
 )
 ```
 
@@ -62,7 +62,7 @@ dataset_path = convert_coco_dataset(
     output_dir="/kaggle/working/coco_yolo",
     final_dest="/kaggle/tmp/COCO2017",
     use_segments=True,
-    cls91to80=True,
+    cls91to80=True,  # Map 91 COCO classes to 80 classes (default: True)
     max_workers=8,
     copy_files=True,  # Set to False to skip copying files
     train_dir_name="train",  # Custom destination directory (default: "train2017")
@@ -80,6 +80,12 @@ dataset_path = convert_coco_dataset(
 coco2yolo-kaggle --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo
 ```
 
+By default, this will map the 91 COCO classes to 80 classes. If you want to keep the original 91 classes, use:
+
+```bash
+coco2yolo-kaggle --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo --no-cls91to80
+```
+
 #### Copy Files Only (with Custom Directory Names)
 
 ```bash
@@ -92,8 +98,13 @@ coco2yolo-kaggle --mode=copy --json-dir=/kaggle/input/coco-2017-dataset/coco2017
 coco2yolo-kaggle --mode=all --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo --final-dest=/kaggle/tmp/COCO2017 --train-dir-name=train --val-dir-name=val
 ```
 
-## Customizing Directory Structure
+## Class Mapping and Customizing Directory Structure
 
+### Class Mapping
+- By default, the tool maps the original 91 COCO classes to the standard 80 classes (`cls91to80=True`)
+- To preserve the original 91 classes, use the `--no-cls91to80` flag
+
+### Directory Name Customization
 You can customize the directory names using these parameters:
 
 - `--train-dir-name`: Set destination train directory name (default: "train2017")
@@ -107,7 +118,7 @@ You can customize the directory names using these parameters:
 # 1. Install the package
 !pip install coco2yolo-kaggle
 
-# 2. Convert labels only
+# 2. Convert labels only (with class mapping)
 !coco2yolo-kaggle --json-dir=/kaggle/input/coco-2017-dataset/coco2017/annotations --output-dir=/kaggle/working/coco_yolo
 
 # 3. Copy dataset files with custom directory names

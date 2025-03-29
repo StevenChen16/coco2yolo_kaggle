@@ -22,8 +22,8 @@ def main():
     parser.add_argument('--use-segments', action='store_true',
                         help='Whether to use segment annotations')
     
-    parser.add_argument('--cls91to80', action='store_true',
-                        help='Whether to map 91 classes to 80 classes')
+    parser.add_argument('--no-cls91to80', action='store_false', dest='cls91to80',
+                        help='Disable mapping 91 classes to 80 classes (enabled by default)')
     
     parser.add_argument('--max-workers', type=int, default=8,
                         help='Number of parallel worker threads')
@@ -44,6 +44,9 @@ def main():
     # Command mode selection
     parser.add_argument('--mode', type=str, choices=['convert', 'copy', 'all'], default='convert',
                         help='Operation mode: convert (labels only), copy (after convert), or all (both)')
+    
+    # Set cls91to80 to True by default
+    parser.set_defaults(cls91to80=True)
     
     args = parser.parse_args()
     
