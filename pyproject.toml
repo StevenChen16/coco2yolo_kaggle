@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "coco2yolo-kaggle"
-version = "0.1.0"
+version = "0.2.0"
 description = "Convert COCO dataset to YOLO format in Kaggle environment"
 readme = "README.md"
 authors = [{name = "Your Name", email = "your.email@example.com"}]
