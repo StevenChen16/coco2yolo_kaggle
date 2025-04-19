@@ -5,7 +5,7 @@ from .yolo2coco import yolo_to_coco, yolo_to_coco_from_yaml
 import concurrent.futures
 import shutil
 
-__version__ = "0.1.0"
+__version__ = "0.3.0"
 
 def convert_coco_labels(
     json_dir="/kaggle/input/coco-2017-dataset/coco2017/annotations",
