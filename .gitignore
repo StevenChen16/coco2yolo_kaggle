@@ -1,3 +1,4 @@
 *.pyc
 dist/*
 coco2yolo_kaggle.egg-info/*
+test_env/*
